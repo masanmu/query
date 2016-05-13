@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/open-falcon/query/g"
 	"io/ioutil"
 	"log"
@@ -250,7 +251,7 @@ func getMetricValues(req *http.Request, host string, targets []string, result []
 			}
 
 			for _, node := range nodes {
-				if _, ok := node.(map[string]interface{})["Values"]; ok {
+				if node.(map[string]interface{})["Values"] != nil {
 					result = append(result, node)
 				}
 			}
@@ -264,9 +265,17 @@ func getValues(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
 	for _, target := range req.PostForm["target"] {
 		if !strings.Contains(target, ".select metric") {
-			targets := strings.Split(target, "#")
-			host, targets := targets[0], targets[1:]
-			result = getMetricValues(req, host, targets, result)
+			a := []int{122: 122}
+			for index, _ := range a {
+				if index >= 65 {
+					char := fmt.Sprintf("%c", index)
+					rep := "#" + char
+					target := strings.Replace(target, "undefined", rep, 1)
+					targets := strings.Split(target, "#")
+					host, targets := targets[0], targets[1:]
+					result = getMetricValues(req, host, targets, result)
+				}
+			}
 		}
 	}
 	RenderJson(w, result)
