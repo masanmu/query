@@ -266,8 +266,7 @@ func getValues(w http.ResponseWriter, req *http.Request) {
 	for _, target := range req.PostForm["target"] {
 		fmt.Println(target)
 		if !strings.Contains(target, ".select metric") {
-			a := []int{122: 122}
-			for index, _ := range a {
+			for index := 65; index<=122;index++ {
 				if index >= 65 && strings.Contains(target, "undefined") {
 					char := fmt.Sprintf("%c", index)
 					rep := "#" + char
